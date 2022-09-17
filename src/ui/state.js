@@ -24,12 +24,14 @@ const persistentWritable = (key, defaultValue) => {
 
 export const effects = [Effect1, Effect2, Effect3, Effect4];
 export const effect = {
+  editor: null,
   errors: writable([]),
   source: persistentWritable('effect', effects[0]),
 };
 
 export const scenes = [Scene1, Scene2, Scene3, Scene4, Scene5];
 export const scene = {
+  editor: null,
   errors: writable([]),
   source: persistentWritable('scene', scenes[0]),
 };

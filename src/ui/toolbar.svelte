@@ -8,6 +8,7 @@
     view,
   } from './state.js';
   import Dropdown from './components/dropdown.svelte';
+  import File from './file.svelte';
 
   const views = [
     { id: 'scene', name: 'Scene' },
@@ -16,14 +17,14 @@
   ];
 
   const loadEffect = (source) => () => {
-    delete effect.editor;
+    effect.editor = null;
     effect.source.set(source);
   };
 
   const loadScene = (source) => () => {
-    delete scene.editor;
-    rendering.input.reset();
+    scene.editor = null;
     scene.source.set(source);
+    rendering.input.reset();
   };
   
   const setView = (id) => () => {
@@ -33,6 +34,7 @@
 
 <div class="toolbar">
   <div>
+    <File />
     {#each views as { id, name }}
       <div class="view" class:enabled={$view === id} on:click={setView(id)}>
         {name}
@@ -43,7 +45,7 @@
     {#if $view !== 'settings'}
       <Dropdown>
         <div class="toggle" slot="toggle">
-          Examples
+          <div class="label">Examples</div>
           <div class="arrow" />
         </div>
         <svelte:fragment slot="options">
@@ -81,21 +83,26 @@
   .arrow {
     width: 0; 
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid #fff;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-top: 0.25rem solid #fff;
   }
 
   .toggle, .action {
     box-sizing: border-box;
-    width: 88px;
+    width: 5rem;
   }
 
   .toggle {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     padding: 0.5rem;
+  }
+
+  .toggle .label {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
   }
 
   .action {
@@ -124,8 +131,8 @@
 
   .view.enabled::before {
     position: absolute;
-    left: 0.5rem;
-    right: 0.5rem;
+    left: 0;
+    right: 0;
     bottom: 0.25rem;
     height: 0.25rem;
     content: "";

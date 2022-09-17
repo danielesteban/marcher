@@ -19,7 +19,7 @@
     drag.offset = clientX;
   };
   const mousemove = ({ clientX }) => {
-    drag.state = Math.max(Math.floor(drag.initial + clientX - drag.offset), 320);
+    drag.state = Math.max(Math.floor(drag.initial + clientX - drag.offset), 340);
     tick().then(() => window.dispatchEvent(new Event('resize')));
   };
   const mouseup = () => {

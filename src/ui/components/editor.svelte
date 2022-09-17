@@ -124,7 +124,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     cursor: pointer;
     gap: 0.5rem;
     background-color: #111;
@@ -133,9 +133,9 @@
   .arrow {
     width: 0; 
     height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid #fff;
+    border-left: 0.25rem solid transparent;
+    border-right: 0.25rem solid transparent;
+    border-top: 0.25rem solid #fff;
   }
 
   .errors.open .arrow {
