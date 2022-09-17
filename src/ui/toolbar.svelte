@@ -116,7 +116,10 @@
 
   .view {
     position: relative;
-    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0;
+    width: 4rem;
     cursor: pointer;
   }
 
