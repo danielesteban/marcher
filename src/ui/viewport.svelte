@@ -13,13 +13,6 @@
     const input = new Input({ camera, target: viewport });
     const renderer = new Renderer({ adapter, camera, device });
     viewport.appendChild(renderer.canvas);
-    // Still dunno why.. but it throws an error if I don't do this.
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setSize(input.bounds.width, input.bounds.height);
-    window.addEventListener('resize', () => {
-      input.updateBounds();
-      renderer.setSize(input.bounds.width, input.bounds.height);
-    }, false);
 
     const raymarcher = new Raymarcher(renderer);
     renderer.scene.push(raymarcher);
@@ -78,6 +71,10 @@
     const subscriptions = [
       rendering.iterations.subscribe((count) => raymarcher.setMaxIterations(count)),
       rendering.mode.subscribe((mode) => raymarcher.setMode(mode)),
+      rendering.resolution.subscribe((resolution) => {
+        renderer.resolution = Math.pow(0.5, Math.floor((1 - resolution) * 6));
+        renderer.setSize(input.bounds.width, input.bounds.height);
+      }),
       effect.source.subscribe((source) => {
         renderer.postprocessing.setEffect(source);
         processModuleErrors(renderer.postprocessing, effect.errors);
@@ -89,6 +86,11 @@
     ];
 
     requestAnimationFrame(animate);
+
+    window.addEventListener('resize', () => {
+      input.updateBounds();
+      renderer.setSize(input.bounds.width, input.bounds.height);
+    }, false);
 
     return () => {
       subscriptions.forEach((unsubscribe) => unsubscribe());

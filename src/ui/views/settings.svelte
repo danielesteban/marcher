@@ -1,9 +1,10 @@
 <script>
   import { rendering } from '../state.js';
   import Number from '../components/number.svelte';
+  import Range from '../components/range.svelte';
   import Select from '../components/select.svelte';
 
-  const { iterations, mode } = rendering;
+  const { iterations, mode, resolution } = rendering;
   const controls = [
     { id: 'W', name: 'Move forwards'},
     { id: 'A', name: 'Move leftwards'},
@@ -85,6 +86,10 @@
 </script>
 
 <div class="wrapper">
+  <div class="input">
+    <label for="resolution">Resolution:</label>
+    <Range id="resolution" state={resolution} step={0.2} min={0.2} max={1} />
+  </div>
   <div class="input">
     <label for="mode">Mode:</label>
     <Select id="mode" options={modes} state={mode} />

@@ -41,6 +41,7 @@ export const rendering = {
   input: null,
   iterations: persistentWritable('iterations', 300),
   mode: persistentWritable('mode', 'raymarching'),
+  resolution: persistentWritable('resolution', 1),
 };
 
 export const view = writable('scene');
