@@ -5,8 +5,8 @@
 
   let loader;
   let downloader;
-  const importScene = () => loader.click();
-  const readScene = () => {
+  const importFile = () => loader.click();
+  const readFile = () => {
     const file = loader.files[0];
     if (!file) {
       return;
@@ -22,20 +22,24 @@
     }, false);
     reader.readAsText(file);
   };
-  const exportScene = () => {
+  const exportFile = () => {
     const blob = new Blob([JSON.stringify({
       effect: get(effect.source),
       scene: get(scene.source),
       version: 1,
     })], { type: 'application/json' });
-    downloader.download = 'scene.json';
+    const now = new Date();
+    const f = (v) => ('00' + v).slice(-2);
+    const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
+    const time = `${f(now.getHours())}${f(now.getMinutes())}`;
+    downloader.download = `marcher-${date}${time}.json`;
     downloader.href = URL.createObjectURL(blob);
     downloader.click();
   };
 </script>
 
 <div class="helpers">
-  <input type="file" accept="application/json" on:change={readScene} bind:this={loader} />
+  <input type="file" accept="application/json" on:change={readFile} bind:this={loader} />
   <!-- svelte-ignore a11y-missing-attribute a11y-missing-content -->
   <a bind:this={downloader} />
 </div>
@@ -46,10 +50,10 @@
     <div class="label">File</div>
   </div>
   <svelte:fragment slot="options">
-    <div class="action" on:click={importScene}>
+    <div class="action" on:click={importFile}>
       Import
     </div>
-    <div class="action" on:click={exportScene}>
+    <div class="action" on:click={exportFile}>
       Export
     </div>
   </svelte:fragment>
