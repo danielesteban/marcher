@@ -1,26 +1,65 @@
 <script>
+  import { onMount } from 'svelte';
   import { get } from 'svelte/store';
   import { effect, rendering, scene } from './state.js';
   import Dropdown from './components/dropdown.svelte';
+  import IPFS from './ipfs.js';
 
   let loader;
   let downloader;
-  const importFile = () => loader.click();
-  const exportFile = () => {
+  const version = 1;
+  const getFile = () => {
     const blob = new Blob([JSON.stringify({
       effect: get(effect.source),
       scene: get(scene.source),
-      version: 1,
+      version,
     })], { type: 'application/json' });
     const now = new Date();
     const f = (v) => ('00' + v).slice(-2);
     const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
     const time = `${f(now.getHours())}${f(now.getMinutes())}`;
-    downloader.download = `marcher-${date}${time}.json`;
-    downloader.href = URL.createObjectURL(blob);
+    return {
+      path: `marcher-${date}${time}.json`,
+      content: blob,
+    };
+  }
+  const exportFile = () => {
+    const { content, path } = getFile();
+    downloader.download = path;
+    downloader.href = URL.createObjectURL(content);
     downloader.click();
   };
+  const importFile = () => loader.click();
+  const loadData = (data) => {
+    if (data.version !== version) {
+      throw new Error('version');
+    }
+    effect.editor = null;
+    effect.source.set(data.effect);
+    scene.editor = null;
+    scene.source.set(data.scene);
+    rendering.input.reset();
+  };
+  const loadURL = () => {
+    const [type, id] = location.hash.slice(2).split('/')[0].split(':');
+    if (type === 'ipfs' && id) {
+      fetch(`https://ipfs.io/ipfs/${id}`)
+        .then((res) => res.json())
+        .then(loadData)
+        .catch((e) => console.error(e));
+    }
+  };
   const prevent = (e) => e.preventDefault();
+  const publish = () => (
+    IPFS()
+      .then((ipfs) => ipfs.add(getFile()))
+      .then((file) => {
+        const url = new URL(location);
+        url.hash = `#/ipfs:${file.cid}`;
+        window.open(url.toString());
+      })
+      .catch((e) => console.error(e))
+  );
   const readFile = (e) => {
     e.preventDefault();
     const [file] = e.dataTransfer ? e.dataTransfer.files : e.target.files;
@@ -30,21 +69,18 @@
     const reader = new FileReader();
     reader.addEventListener('load', () => {
       loader.value = null;
-      const data = JSON.parse(reader.result);
-      effect.editor = null;
-      effect.source.set(data.effect);
-      scene.editor = null;
-      scene.source.set(data.scene);
-      rendering.input.reset();
+      loadData(JSON.parse(reader.result));
     }, false);
     reader.readAsText(file);
   };
+  onMount(loadURL);
 </script>
 
 <svelte:window
   on:dragenter={prevent}
   on:dragover={prevent}
   on:drop={readFile}
+  on:hashchange={loadURL}
 />
 
 <div class="helpers">
@@ -64,6 +100,9 @@
     </div>
     <div class="action" on:click={exportFile}>
       Export
+    </div>
+    <div class="action" on:click={publish}>
+      Publish
     </div>  
   </svelte:fragment>
 </Dropdown>
