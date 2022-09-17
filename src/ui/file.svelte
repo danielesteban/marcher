@@ -13,6 +13,9 @@
     const blob = new Blob([JSON.stringify({
       effect: get(effect.source),
       scene: get(scene.source),
+      iterations: get(rendering.iterations),
+      mode: get(rendering.mode),
+      resolution: get(rendering.resolution),
       version,
     })], { type: 'application/json' });
     const now = new Date();
@@ -39,6 +42,9 @@
     effect.source.set(data.effect);
     scene.editor = null;
     scene.source.set(data.scene);
+    rendering.iterations.set(data.iterations);
+    rendering.mode.set(data.mode);
+    rendering.resolution.set(data.resolution);
     rendering.input.reset();
   };
   const loadURL = () => {
