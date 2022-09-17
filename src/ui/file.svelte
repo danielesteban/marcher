@@ -6,8 +6,24 @@
   let loader;
   let downloader;
   const importFile = () => loader.click();
-  const readFile = () => {
-    const file = loader.files[0];
+  const exportFile = () => {
+    const blob = new Blob([JSON.stringify({
+      effect: get(effect.source),
+      scene: get(scene.source),
+      version: 1,
+    })], { type: 'application/json' });
+    const now = new Date();
+    const f = (v) => ('00' + v).slice(-2);
+    const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
+    const time = `${f(now.getHours())}${f(now.getMinutes())}`;
+    downloader.download = `marcher-${date}${time}.json`;
+    downloader.href = URL.createObjectURL(blob);
+    downloader.click();
+  };
+  const prevent = (e) => e.preventDefault();
+  const readFile = (e) => {
+    e.preventDefault();
+    const [file] = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     if (!file) {
       return;
     }
@@ -23,21 +39,13 @@
     }, false);
     reader.readAsText(file);
   };
-  const exportFile = () => {
-    const blob = new Blob([JSON.stringify({
-      effect: get(effect.source),
-      scene: get(scene.source),
-      version: 1,
-    })], { type: 'application/json' });
-    const now = new Date();
-    const f = (v) => ('00' + v).slice(-2);
-    const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
-    const time = `${f(now.getHours())}${f(now.getMinutes())}`;
-    downloader.download = `marcher-${date}${time}.json`;
-    downloader.href = URL.createObjectURL(blob);
-    downloader.click();
-  };
 </script>
+
+<svelte:window
+  on:dragenter={prevent}
+  on:dragover={prevent}
+  on:drop={readFile}
+/>
 
 <div class="helpers">
   <input type="file" accept="application/json" on:change={readFile} bind:this={loader} />
@@ -56,7 +64,7 @@
     </div>
     <div class="action" on:click={exportFile}>
       Export
-    </div>
+    </div>  
   </svelte:fragment>
 </Dropdown>
 
