@@ -1,6 +1,6 @@
 <script>
   import { get } from 'svelte/store';
-  import { effect, scene } from './state.js';
+  import { effect, rendering, scene } from './state.js';
   import Dropdown from './components/dropdown.svelte';
 
   let loader;
@@ -19,6 +19,7 @@
       effect.source.set(data.effect);
       scene.editor = null;
       scene.source.set(data.scene);
+      rendering.input.reset();
     }, false);
     reader.readAsText(file);
   };
