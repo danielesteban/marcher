@@ -7,6 +7,7 @@
 
   let loader;
   let downloader;
+  let isFetching = false;
   const version = 1;
   const getFile = () => {
     const blob = new Blob([JSON.stringify({
@@ -43,10 +44,14 @@
   const loadURL = () => {
     const [type, id] = location.hash.slice(2).split('/')[0].split(':');
     if (type === 'ipfs' && id) {
+      isFetching = true;
       fetch(`https://ipfs.io/ipfs/${id}`)
         .then((res) => res.json())
         .then(loadData)
-        .catch((e) => console.error(e));
+        .catch((e) => console.error(e))
+        .finally(() => {
+          isFetching = false;
+        });
     }
   };
   const prevent = (e) => e.preventDefault();
@@ -89,23 +94,27 @@
   <a bind:this={downloader} />
 </div>
 
-<Dropdown>
-  <div class="toggle" slot="toggle">
-    <div class="arrow" />
-    <div class="label">File</div>
-  </div>
-  <svelte:fragment slot="options">
-    <div class="action" on:click={importFile}>
-      Import
+{#if isFetching}
+  <div class="fetching">Fetching...</div>
+{:else}
+  <Dropdown>
+    <div class="toggle" slot="toggle">
+      <div class="arrow" />
+      <div class="label">File</div>
     </div>
-    <div class="action" on:click={exportFile}>
-      Export
-    </div>
-    <div class="action" on:click={publish}>
-      Publish
-    </div>  
-  </svelte:fragment>
-</Dropdown>
+    <svelte:fragment slot="options">
+      <div class="action" on:click={importFile}>
+        Import
+      </div>
+      <div class="action" on:click={exportFile}>
+        Export
+      </div>
+      <div class="action" on:click={publish}>
+        Publish
+      </div>
+    </svelte:fragment>
+  </Dropdown>
+{/if}
 
 <style>
   .helpers {
@@ -120,15 +129,21 @@
     border-top: 0.25rem solid #fff;
   }
 
-  .toggle, .action {
+  .action, .fetching, .toggle {
     box-sizing: border-box;
     width: 4rem;
   }
 
-  .toggle {
+  .fetching, .toggle {
     display: flex;
     align-items: center;
     padding: 0.5rem;
+  }
+  
+  .fetching {
+    padding: 0.5rem 0;
+    color: #393;
+    justify-content: center;
   }
 
   .toggle .label {
