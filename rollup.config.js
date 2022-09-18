@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import copy from 'rollup-plugin-copy';
 import html from '@rollup/plugin-html';
 import livereload from 'rollup-plugin-livereload';
 import postcss from 'rollup-plugin-postcss';

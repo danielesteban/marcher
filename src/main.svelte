@@ -17,9 +17,16 @@
       const device = await adapter.requestDevice();
       return { adapter, device };
     })(),
-    new Promise((resolve) => {
-      require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.0/min/vs' }});
-      require(['vs/editor/editor.main'], resolve);
+    new Promise((resolve, reject) => {
+      const config = { paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.0/min/vs' }};
+      const script = document.createElement('script');
+      script.onload = () => {
+        require.config(config);
+        require(['vs/editor/editor.main'], resolve);
+      };
+      script.onerror = reject;
+      script.src = `${config.paths.vs}/loader.js`;
+      document.head.appendChild(script);
     }),
   ])
     .then(([gpu]) => {
