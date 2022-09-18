@@ -1,5 +1,5 @@
 <script>
-  import { tick } from 'svelte';
+  import { onDestroy } from 'svelte';
 
   export let text;
 
@@ -9,10 +9,11 @@
     navigator.clipboard.writeText(text);
     copied = true;
     clearTimeout(timer);
-    timer = setTimeout(() => tick().then(() => {
+    timer = setTimeout(() => {
       copied = false;
-    }), 1000);
+    }, 1000);
   };
+  onDestroy(() => clearTimeout(timer));
 </script>
 
 <button on:click={copy}>

@@ -13,7 +13,7 @@
     tick().then(resizeEditor);
   };
   onMount(() => {
-    let debounce;
+    let debounce = null;
     let isFromEditor = true;
     let isFromSubscription = false;
     editor = monaco.editor.create(wrapper, {
@@ -54,7 +54,7 @@
       if (isFromSubscription) {
         return;
       }
-      if (debounce) clearTimeout(debounce);
+      clearTimeout(debounce);
       debounce = setTimeout(() => {
         isFromEditor = true;
         source.set(editor.getValue());
