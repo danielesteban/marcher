@@ -3,6 +3,7 @@
   import App from './ui/app.svelte';
   import Embed from './ui/embed.svelte';
   
+  const isEmbed = window !== window.top;
   let hasError = false;
   let isLoading = true;
 
@@ -48,19 +49,21 @@
   <div class="support">
     Sorry! You'll need to try this in a browser with WebGPU support like <a href="https://www.google.com/chrome" rel="noopener noreferrer" target="_blank">Chrome</a>.
   </div>
-{:else if window !== window.top}
+{:else if isEmbed}
   <Embed />
 {:else}
   <App />
 {/if}
 
-<div class="info">
-  marcher - <a href="https://github.com/danielesteban/marcher" rel="noopener noreferrer" target="_blank">view source</a><br />
-  <a href="https://dani.gatunes.com" rel="noopener noreferrer" target="_blank">dani@gatunes</a> © 2022
-</div>
-<a class="ribbon" href="https://github.com/sponsors/danielesteban" data-ribbon="♥ Become a sponsor" rel="noopener noreferrer" target="_blank">
-  ♥ Become a sponsor
-</a>
+{#if !isEmbed}
+  <div class="info">
+    marcher - <a href="https://github.com/danielesteban/marcher" rel="noopener noreferrer" target="_blank">view source</a><br />
+    <a href="https://dani.gatunes.com" rel="noopener noreferrer" target="_blank">dani@gatunes</a> © 2022
+  </div>
+  <a class="ribbon" href="https://github.com/sponsors/danielesteban" data-ribbon="♥ Become a sponsor" rel="noopener noreferrer" target="_blank">
+    ♥ Become a sponsor
+  </a>
+{/if}
 
 <style>
   :global(:root) {
