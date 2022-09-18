@@ -1,5 +1,5 @@
 <script>
-  import { dialogs, deserialize, serialize } from './state.js';
+  import { dialogs, deserialize, serialize, reset } from './state.js';
   import Dropdown from './components/dropdown.svelte';
 
   let loader;
@@ -46,6 +46,9 @@
     <div class="label">File</div>
   </div>
   <svelte:fragment slot="options">
+    <div class="action" on:click={reset}>
+      New
+    </div>
     <div class="action" on:click={importFile}>
       Import
     </div>

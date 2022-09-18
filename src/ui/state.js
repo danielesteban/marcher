@@ -28,6 +28,7 @@ const persistentWritable = (key, defaultValue) => {
 };
 
 export const dialogs = {
+  fetch: writable(false),
   publish: writable(false),
 };
 export const view = writable('scene');
@@ -88,9 +89,21 @@ export const serialize = () => {
   };
 };
 
+export const reset = () => (
+  deserialize({
+    effect: effects[0],
+    scene: scenes[0],
+    iterations: 300,
+    mode: 'conetracing',
+    resolution: 0.8,
+    version,
+  })
+);
+
 const Router = () => {
   const [type, id] = location.hash.slice(2).split('/')[0].split(':');
   if (type === 'ipfs' && id) {
+    dialogs.fetch.set(`ipfs://${id}`);
     dialogs.publish.set(false);
     fetch(`https://ipfs.io/ipfs/${id}`)
       .then((res) => res.json())
@@ -102,7 +115,8 @@ const Router = () => {
           isFromRouter = false;
         }
       })
-      .catch((e) => console.error(e));
+      .catch((e) => console.error(e))
+      .finally(() => dialogs.fetch.set(false));
   }
 };
 window.addEventListener('hashchange', Router, false);

@@ -2,6 +2,7 @@
   import { tick } from 'svelte';
   import { view } from './state.js';
   import Effect from './views/effect.svelte';
+  import Fetch from './dialogs/fetch.svelte';
   import Publish from './dialogs/publish.svelte';
   import Scene from './views/scene.svelte';
   import Settings from './views/settings.svelte';
@@ -45,6 +46,7 @@
   <Viewport />
 </div>
 
+<Fetch />
 <Publish />
 
 <style>
