@@ -21,7 +21,7 @@
 
   .wrapper {
     animation: pop 0.25s forwards;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 50%;
     gap: 1rem;
@@ -32,6 +32,7 @@
     border-radius: 0 0 0.5rem 0.5rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
     white-space: nowrap;
+    z-index: 1;
   }
   
   .wrapper > span {
