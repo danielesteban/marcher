@@ -51,7 +51,10 @@ class Renderer {
 
   setSize(width, height, pixelRatio = (window.devicePixelRatio || 1)) {
     const { camera, canvas, descriptor, postprocessing, resolution } = this;
-    const size = [Math.floor(width * pixelRatio * resolution), Math.floor(height * pixelRatio * resolution)];
+    const size = [
+      Math.max(Math.floor(width * pixelRatio * resolution), 1),
+      Math.max(Math.floor(height * pixelRatio * resolution), 1),
+    ];
     canvas.width = size[0];
     canvas.height = size[1];
     canvas.style.width = `${width}px`;
