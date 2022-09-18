@@ -50,7 +50,7 @@
   }
   .heading {
     font-size: 1.5em;
-    line-height: 1rem;
+    line-height: 1.25rem;
     text-align: center;
   }
   .link {

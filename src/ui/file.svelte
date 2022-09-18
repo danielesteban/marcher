@@ -29,6 +29,7 @@
   const loadURL = () => {
     const [type, id] = location.hash.slice(2).split('/')[0].split(':');
     if (type === 'ipfs' && id) {
+      $publishing = false;
       isFetching = true;
       fetch(`https://ipfs.io/ipfs/${id}`)
         .then((res) => res.json())

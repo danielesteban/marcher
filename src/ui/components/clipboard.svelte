@@ -34,6 +34,7 @@
     border-radius: 0.25rem;
     border: 0;
     outline: 0;
+    cursor: pointer;
   }
   button:active {
     transform: translate(0, 1px);
