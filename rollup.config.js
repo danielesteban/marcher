@@ -63,9 +63,6 @@ export default {
     },
     ...(production ? [
       terser({ format: { comments: false } }),
-      copy({
-        targets: [{ src: 'screenshot.png', dest: 'dist' }],
-      }),
       {
         name: 'cname',
         writeBundle() {
