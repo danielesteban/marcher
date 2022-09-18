@@ -1,6 +1,7 @@
 <script>
   import { rendering } from './ui/state.js';
   import App from './ui/app.svelte';
+  import Embed from './ui/embed.svelte';
   
   let hasError = false;
   let isLoading = true;
@@ -47,6 +48,8 @@
   <div class="support">
     Sorry! You'll need to try this in a browser with WebGPU support like <a href="https://www.google.com/chrome" rel="noopener noreferrer" target="_blank">Chrome</a>.
   </div>
+{:else if window !== window.top}
+  <Embed />
 {:else}
   <App />
 {/if}
