@@ -1,5 +1,5 @@
 <script>
-  import { publishing, serialize } from '../state.js';
+  import { dialogs, serialize } from '../state.js';
   import Clipboard from '../components/clipboard.svelte';
   import Dialog from '../components/dialog.svelte';
   import IPFS from '../ipfs.js';
@@ -17,37 +17,27 @@
   );
 </script>
 
-<Dialog state={publishing}>
-  <div class="wrapper">
-    {#await publish()}
-      <div class="heading">
-        Publishing...
-      </div>
-    {:then link}
-      <div class="heading">
-        Successfully published!
-      </div>
-      <div class="link">
-        {link}
-      </div>
-      <div class="actions">
-        <Clipboard text={link}>
-          Copy link
-        </Clipboard>
-      </div>
-    {/await}
-  </div>
+<Dialog state={dialogs.publish}>
+  {#await publish()}
+    <div class="heading">
+      Publishing...
+    </div>
+  {:then link}
+    <div class="heading">
+      Successfully published!
+    </div>
+    <div class="link">
+      {link}
+    </div>
+    <div class="actions">
+      <Clipboard text={link}>
+        Copy link
+      </Clipboard>
+    </div>
+  {/await}
 </Dialog>
 
 <style>
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    width: 512px;
-    padding: 1rem;
-    gap: 1rem;
-  }
   .heading {
     font-size: 1.5em;
     line-height: 1.25rem;

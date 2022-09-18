@@ -45,6 +45,12 @@
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 512px;
+    box-sizing: border-box;
+    padding: 1rem;
     background: #1e1e1e;
     border-radius: 0.5rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);

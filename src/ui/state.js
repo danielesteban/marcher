@@ -9,6 +9,8 @@ import Scene3 from '../scenes/scene3.wgsl';
 import Scene4 from '../scenes/scene4.wgsl';
 import Scene5 from '../scenes/scene5.wgsl';
 
+let isFromRouter = false;
+
 const persistentWritable = (key, defaultValue) => {
   key = `marcher:${key}`;
   const stored = localStorage.getItem(key);
@@ -18,9 +20,18 @@ const persistentWritable = (key, defaultValue) => {
     set: (value) => {
       set(value);
       localStorage.setItem(key, JSON.stringify(value));
+      if (!isFromRouter && location.hash.slice(2)) {
+        location.hash = '/';
+      }
     },
   };
 };
+
+export const dialogs = {
+  publish: writable(false),
+};
+export const view = writable('scene');
+export const version = 1;
 
 export const effects = [Effect1, Effect2, Effect3, Effect4];
 export const effect = {
@@ -36,8 +47,6 @@ export const scene = {
   source: persistentWritable('scene', scenes[0]),
 };
 
-export const publishing = writable(false);
-
 export const rendering = {
   gpu: null,
   input: null,
@@ -46,9 +55,19 @@ export const rendering = {
   resolution: persistentWritable('resolution', 1),
 };
 
-export const view = writable('scene');
-
-export const version = 1;
+export const deserialize = (data) => {
+  if (data.version !== version) {
+    throw new Error('version');
+  }
+  effect.editor = null;
+  effect.source.set(data.effect);
+  scene.editor = null;
+  scene.source.set(data.scene);
+  rendering.iterations.set(data.iterations);
+  rendering.mode.set(data.mode);
+  rendering.resolution.set(data.resolution);
+  if (rendering.input) rendering.input.reset();
+};
 
 export const serialize = () => {
   const blob = new Blob([JSON.stringify({
@@ -68,3 +87,23 @@ export const serialize = () => {
     content: blob,
   };
 };
+
+const Router = () => {
+  const [type, id] = location.hash.slice(2).split('/')[0].split(':');
+  if (type === 'ipfs' && id) {
+    dialogs.publish.set(false);
+    fetch(`https://ipfs.io/ipfs/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        isFromRouter = true;
+        try {
+          deserialize(data);
+        } finally {
+          isFromRouter = false;
+        }
+      })
+      .catch((e) => console.error(e));
+  }
+};
+window.addEventListener('hashchange', Router, false);
+Router();
