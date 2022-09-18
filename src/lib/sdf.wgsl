@@ -49,8 +49,34 @@ fn sdEllipsoid(p : vec3<f32>, r : vec3<f32>) -> f32 {
   return k0 * (k0 - 1.0) / k1;
 }
 
-fn sdPlane(p : vec3<f32>, n : vec3<f32>, h : f32) -> f32 {
-  return dot(p,n) + h;
+fn sdHexPrism(pos : vec3<f32>, r : vec2<f32>) -> f32 {
+  const k : vec3<f32> = vec3<f32>(-0.8660254, 0.5, 0.57735);
+  var p : vec3<f32> = abs(pos);
+  p = vec3<f32>(
+    p.xy - 2.0*min(dot(k.xy, p.xy), 0)*k.xy,
+    p.z
+  );
+  let d : vec2<f32> = vec2<f32>(
+    length(p.xy-vec2(clamp(p.x,-k.z*r.x,k.z*r.x), r.x))*sign(p.y-r.x),
+    p.z-r.y
+  );
+  return min(max(d.x,d.y),0) + length(max(d,vec2<f32>(0)));
+}
+
+fn sdOctahedron(pos : vec3<f32>, r : f32) -> f32 {
+  let p : vec3<f32> = abs(pos);
+  let m : f32 = p.x+p.y+p.z-r;
+  var q : vec3<f32>;
+  if (3.0*p.x < m) { q = p.xyz; }
+  else if (3.0*p.y < m) { q = p.yzx; }
+  else if (3.0*p.z < m) { q = p.zxy; }
+  else { return m*0.57735027; }
+  let k : f32 = clamp(0.5*(q.z-q.y+r),0.0,r); 
+  return length(vec3(q.x,q.y-r+k,q.z-k)); 
+}
+
+fn sdPlane(p : vec3<f32>, n : vec3<f32>, r : f32) -> f32 {
+  return dot(p,n) + r;
 }
 
 fn sdSphere(p : vec3<f32>, r : f32) -> f32 {
@@ -60,4 +86,9 @@ fn sdSphere(p : vec3<f32>, r : f32) -> f32 {
 fn sdTorus(p : vec3<f32>, r : vec2<f32>) -> f32 {
   let q : vec2<f32> = vec2<f32>(length(p.xz) - r.x, p.y);
   return length(q) - r.y;
+}
+
+fn sdTriPrism(p : vec3<f32>, r : vec2<f32>) -> f32 {
+  let q : vec3<f32> = abs(p);
+  return max(q.z-r.y,max(q.x*0.866025+p.y*0.5,-p.y)-r.x*0.5);
 }

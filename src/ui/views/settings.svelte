@@ -62,9 +62,12 @@
         'fn sdBox(p : vec3<f32>, r : vec3<f32>) -> f32',
         'fn sdCapsule(p : vec3<f32>, r : vec2<f32>) -> f32',
         'fn sdEllipsoid(p : vec3<f32>, r : vec3<f32>) -> f32',
-        'fn sdPlane(p : vec3<f32>, n : vec3<f32>, h : f32) -> f32',
+        'fn sdHexPrism(p : vec3<f32>, r : vec2<f32>) -> f32',
+        'fn sdOctahedron(p : vec3<f32>, r : f32) -> f32',
+        'fn sdPlane(p : vec3<f32>, n : vec3<f32>, r : f32) -> f32',
         'fn sdSphere(p : vec3<f32>, r : f32) -> f32',
         'fn sdTorus(p : vec3<f32>, r : vec2<f32>) -> f32',
+        'fn sdTriPrism(p : vec3<f32>, r : vec2<f32>) -> f32',
       ],
     },
     {
