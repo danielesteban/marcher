@@ -2,6 +2,7 @@
   import { tick } from 'svelte';
   import { view } from './state.js';
   import Effect from './views/effect.svelte';
+  import Publish from './dialogs/publish.svelte';
   import Scene from './views/scene.svelte';
   import Settings from './views/settings.svelte';
   import Toolbar from './toolbar.svelte';
@@ -43,6 +44,8 @@
   <div class="divider" on:mousedown={mousedown} />
   <Viewport />
 </div>
+
+<Publish />
 
 <style>
   .app {

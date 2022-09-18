@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import Effect1 from '../effects/effect1.wgsl';
 import Effect2 from '../effects/effect2.wgsl';
 import Effect3 from '../effects/effect3.wgsl';
@@ -36,6 +36,8 @@ export const scene = {
   source: persistentWritable('scene', scenes[0]),
 };
 
+export const publishing = writable(false);
+
 export const rendering = {
   gpu: null,
   input: null,
@@ -45,3 +47,24 @@ export const rendering = {
 };
 
 export const view = writable('scene');
+
+export const version = 1;
+
+export const serialize = () => {
+  const blob = new Blob([JSON.stringify({
+    effect: get(effect.source),
+    scene: get(scene.source),
+    iterations: get(rendering.iterations),
+    mode: get(rendering.mode),
+    resolution: get(rendering.resolution),
+    version,
+  })], { type: 'application/json' });
+  const now = new Date();
+  const f = (v) => ('00' + v).slice(-2);
+  const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
+  const time = `${f(now.getHours())}${f(now.getMinutes())}`;
+  return {
+    path: `marcher-${date}${time}.json`,
+    content: blob,
+  };
+};

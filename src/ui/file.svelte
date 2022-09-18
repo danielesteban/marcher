@@ -1,34 +1,13 @@
 <script>
   import { onMount } from 'svelte';
-  import { get } from 'svelte/store';
-  import { effect, rendering, scene } from './state.js';
+  import { effect, publishing, rendering, scene, version, serialize } from './state.js';
   import Dropdown from './components/dropdown.svelte';
-  import IPFS from './ipfs.js';
 
   let loader;
   let downloader;
   let isFetching = false;
-  const version = 1;
-  const getFile = () => {
-    const blob = new Blob([JSON.stringify({
-      effect: get(effect.source),
-      scene: get(scene.source),
-      iterations: get(rendering.iterations),
-      mode: get(rendering.mode),
-      resolution: get(rendering.resolution),
-      version,
-    })], { type: 'application/json' });
-    const now = new Date();
-    const f = (v) => ('00' + v).slice(-2);
-    const date = `${f(now.getMonth() + 1)}${f(now.getDate())}`;
-    const time = `${f(now.getHours())}${f(now.getMinutes())}`;
-    return {
-      path: `marcher-${date}${time}.json`,
-      content: blob,
-    };
-  }
   const exportFile = () => {
-    const { content, path } = getFile();
+    const { content, path } = serialize();
     downloader.download = path;
     downloader.href = URL.createObjectURL(content);
     downloader.click();
@@ -61,16 +40,9 @@
     }
   };
   const prevent = (e) => e.preventDefault();
-  const publish = () => (
-    IPFS()
-      .then((ipfs) => ipfs.add(getFile()))
-      .then((file) => {
-        const url = new URL(location);
-        url.hash = `#/ipfs:${file.cid}`;
-        window.open(url.toString());
-      })
-      .catch((e) => console.error(e))
-  );
+  const publish = () => {
+    $publishing = true;
+  };
   const readFile = (e) => {
     e.preventDefault();
     const [file] = e.dataTransfer ? e.dataTransfer.files : e.target.files;
