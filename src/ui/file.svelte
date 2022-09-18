@@ -2,10 +2,11 @@
   import { dialogs, deserialize, serialize, reset } from './state.js';
   import Dropdown from './components/dropdown.svelte';
 
-  let loader;
   let downloader;
+  let loader;
   const exportFile = () => {
     const { content, path } = serialize();
+    URL.revokeObjectURL(downloader.href);
     downloader.download = path;
     downloader.href = URL.createObjectURL(content);
     downloader.click();
@@ -14,7 +15,7 @@
   const prevent = (e) => e.preventDefault();
   const publish = () => dialogs.publish.set(true);
   const readFile = (e) => {
-    e.preventDefault();
+    prevent(e);
     const [file] = e.dataTransfer ? e.dataTransfer.files : e.target.files;
     if (!file) {
       return;
@@ -35,9 +36,9 @@
 />
 
 <div class="helpers">
-  <input type="file" accept="application/json" on:change={readFile} bind:this={loader} />
   <!-- svelte-ignore a11y-missing-attribute a11y-missing-content -->
   <a bind:this={downloader} />
+  <input type="file" accept="application/json" bind:this={loader} on:change={readFile} />
 </div>
 
 <Dropdown>
