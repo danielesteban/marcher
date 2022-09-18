@@ -17,8 +17,8 @@
     { id: 'Wheel', name: 'Set movement speed'},
   ];
   const modes = [
-    { id: 'raymarching', name: 'Raymarching (better performance)'},
     { id: 'conetracing', name: 'Conetracing (better antialiasing)'},
+    { id: 'raymarching', name: 'Raymarching (better performance)'},
   ];
   const reference = [
     {

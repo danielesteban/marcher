@@ -51,8 +51,8 @@ export const rendering = {
   gpu: null,
   input: null,
   iterations: persistentWritable('iterations', 300),
-  mode: persistentWritable('mode', 'raymarching'),
-  resolution: persistentWritable('resolution', 1),
+  mode: persistentWritable('mode', 'conetracing'),
+  resolution: persistentWritable('resolution', 0.8),
 };
 
 export const deserialize = (data) => {
